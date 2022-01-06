@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import sys
+import random
+
+from click.decorators import command
+
+flag = sys.argv[1]
+file = sys.argv[2]
+
+def cipher_file(cipher):
+
+    name_sliced = cipher.split('.')
+
+    with open(cipher, 'r') as f:
+        with open(f'{name_sliced[0]}_ciphered.txt', 'a') as result:
+            for line in f:
+                ciphered_line = ''
+                seed = random.randint(10, 26)
+                ciphered_line += str(seed)
+                for letter in line:
+                    code = ord(letter)
+                    ciphered_line += chr(code + seed)
+                result.write(ciphered_line + '\n')
+
+def decipher_file(decipher):
+
+    name_sliced = decipher.split('.')
+
+    with open(decipher, 'r') as f:
+        with open(f'{name_sliced[0]}_deciphered.txt', 'a') as result:
+            for line in f:
+                seed = int(line[:2])
+                message = line[2:-1]
+                deciphered_message = ''
+                for letter in message:
+                    code = ord(letter)
+                    deciphered_message += chr(code - seed)
+                result.write(deciphered_message)
+
+
+if __name__ == "__main__":
+    if flag.lower() == '--cipher' or flag.lower() == '-c':
+        cipher_file(file)
+        print(f'Your file {file} has been succesfully cihpered.')
+    elif flag.lower() == '--decipher' or flag.lower() == '-d':
+        decipher_file(file)
+        print(f'Your file {file} has been successfully deciphered.')
+    else:
+        print('Please try again. Run command should look like this: cipher3000 --cipher file.txt')
